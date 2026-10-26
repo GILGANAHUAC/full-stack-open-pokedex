@@ -1,8 +1,9 @@
 module.exports = {
-  "env": {
-    "browser": true,
-    "es6": true,
-    "jest/globals": true
+  env: {
+    browser: true,
+    es6: true,
+    node: true, // <-- Esto soluciona los errores de 'module', 'require' y 'process'
+    jest: true,
   },
   "extends": [
     "eslint:recommended",
