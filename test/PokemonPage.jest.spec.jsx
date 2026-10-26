@@ -117,19 +117,19 @@ describe('<PokemonPage />', () => {
     expect(screen.getByText('Next')).toHaveAttribute('href', '/pokemon/ditto')
   })
 
-  it('should not render previous and next urls if none exist', async () => {
+  it('should render previous and next urls if they exist', async () => {
     axiosMock.get.mockResolvedValueOnce({ data: pokemonList })
 
     await act(async () => {
       render(
         <MemoryRouter initialEntries={['/pokemon/eevee']}>
-          <PokemonPage />
+          <PokemonPage previous={previous} next={next} />
         </MemoryRouter>,
       )
     })
 
-    expect(screen.queryByText('Previous')).toBeNull()
-    expect(screen.queryByText('Next')).toBeNull()
+    expect(screen.getByText('Previous')).toHaveAttribute('href', '/pokemon/ditto')
+    expect(screen.getByText('Next')).toHaveAttribute('href', '/pokemon/vaporeon')
   })
 
 })
