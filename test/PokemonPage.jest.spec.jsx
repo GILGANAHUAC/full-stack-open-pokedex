@@ -72,61 +72,45 @@ const next = {
   id: 134
 }
 
-describe('<PokemonPage />', () => {
-  it('should render abilities', async () => {
-    axiosMock.get.mockResolvedValueOnce({ data: pokemonList })
+const renderPage = async (props = {}) => {
+  axiosMock.get.mockResolvedValueOnce({ data: pokemonList })
 
-    await act(async () => {
-      render(
-        <MemoryRouter initialEntries={['/pokemon/eevee']}>
-          <PokemonPage />
-        </MemoryRouter>,
-      )
-    })
+  await act(async () => {
+    render(
+      <MemoryRouter initialEntries={['/pokemon/eevee']}>
+        <PokemonPage {...props} />
+      </MemoryRouter>,
+    )
+  })
+}
+
+describe('<PokemonPage />', () => {
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  it('should render abilities', async () => {
+    await renderPage()
 
     expect(screen.getByText('adaptability')).toBeVisible()
     expect(screen.getByText('anticipation')).toBeVisible()
   })
 
   it('should render stats', async () => {
-    axiosMock.get.mockResolvedValueOnce({ data: pokemonList })
-
-    await act(async () => {
-      render(
-        <MemoryRouter initialEntries={['/pokemon/eevee']}>
-          <PokemonPage />
-        </MemoryRouter>,
-      )
-    })
+    await renderPage()
 
     expect(screen.getByTestId('stats')).toHaveTextContent('hp55attack55')
   })
 
   it('should render previous and next urls if they exist', async () => {
-    axiosMock.get.mockResolvedValueOnce({ data: { ...pokemonList, previous, next } })
-
-    await act(async () => {
-      render(
-        <MemoryRouter initialEntries={['/pokemon/eevee']}>
-          <PokemonPage />
-        </MemoryRouter>,
-      )
-    })
+    await renderPage({ previous, next })
 
     expect(screen.getByText('Previous')).toHaveAttribute('href', '/pokemon/ditto')
     expect(screen.getByText('Next')).toHaveAttribute('href', '/pokemon/vaporeon')
   })
 
   it('should not render previous and next urls if none exist', async () => {
-    axiosMock.get.mockResolvedValueOnce({ data: pokemonList })
-
-    await act(async () => {
-      render(
-        <MemoryRouter initialEntries={['/pokemon/eevee']}>
-          <PokemonPage />
-        </MemoryRouter>,
-      )
-    })
+    await renderPage()
 
     expect(screen.queryByText('Previous')).toBeNull()
     expect(screen.queryByText('Next')).toBeNull()
